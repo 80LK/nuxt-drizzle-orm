@@ -1,19 +1,41 @@
-import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, createResolver, addTemplate, addServerImports } from '@nuxt/kit'
+import { name, version } from "../package.json"
 
-// Module options TypeScript interface definition
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  schema: string;
+  migrationsDir: string;
+  url?: string;
+};
+
+declare module '@nuxt/schema' {
+  interface RuntimeConfig {
+    drizzle: {
+      url: string;
+    }
+  }
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'my-module',
-    configKey: 'myModule',
+    name,
+    version,
+    configKey: 'drizzle',
   },
   // Default configuration options of the Nuxt module
-  defaults: {},
+  defaults: {
+    schema: 'server/drizzle',
+    migrationsDir: "migrations/drizzle"
+  },
   setup(_options, _nuxt) {
-    const resolver = createResolver(import.meta.url)
+    const resolver = createResolver(import.meta.url);
 
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
-    addPlugin(resolver.resolve('./runtime/plugin'))
+    _nuxt.options.runtimeConfig.drizzle = Object.assign({
+      url: _options.url
+    }, _nuxt.options.runtimeConfig.drizzle);
+
+    addServerImports({
+      name: 'useDB',
+      from: resolver.resolve('runtime/server/useDB')
+    });
   },
 })
