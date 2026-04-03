@@ -1,0 +1,48 @@
+name: Build and Publish Dist
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare dist branch
+        run: |
+          mkdir dist-branch
+          cp -r dist dist-branch/
+          cp -r bin dist-branch/
+          cp package.json dist-branch/
+          cp README.md dist-branch/
+
+      - name: Push to dist branch
+        run: |
+          cd dist-branch
+          git init
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "build: update dist"
+          git branch -M dist
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push -f origin dist
