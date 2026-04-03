@@ -8,7 +8,11 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "nuxt-drizzle-orm": "latest",
-    "nuxt": "^4.4.2"
+    "nuxt": "^4.4.2",
+    "nuxt-drizzle-orm": "file:../",
+    "vue-contenteditable": "^4.1.0"
+  },
+  "localDependencies": {
+    "nuxt-drizzle-orm": ".."
   }
 }

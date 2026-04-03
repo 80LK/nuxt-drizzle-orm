@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  modules: ['../src/module'],
+  modules: ['nuxt-drizzle-orm'],
   devtools: { enabled: true },
   compatibilityDate: 'latest',
   drizzle: {}
