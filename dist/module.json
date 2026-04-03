@@ -1,0 +1,9 @@
+{
+  "name": "nuxt-drizzle-orm",
+  "version": "1.0.0",
+  "configKey": "drizzle",
+  "builder": {
+    "@nuxt/module-builder": "1.0.2",
+    "unbuild": "3.6.1"
+  }
+}
